@@ -18,6 +18,16 @@ namespace ProEventos.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder){ //declara que a tabela é de N pra N
             modelBuilder.Entity<PalestranteEvento>()
                 .HasKey(PE => new { PE.EventoId, PE.PalestranteId});
+
+            modelBuilder.Entity<Evento>() //delete em cascata
+                .HasMany(e => e.RedesSociais) //muitos
+                .WithOne(rs => rs.Evento)   //um
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Palestrante>() //delete em cascata
+                .HasMany(e => e.RedesSociais) //muitos
+                .WithOne(rs => rs.Palestrante)   //um
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

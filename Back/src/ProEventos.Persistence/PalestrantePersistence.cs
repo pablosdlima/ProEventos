@@ -17,13 +17,15 @@ namespace ProEventos.Persistence
         public async Task<Palestrante[]> GetAllPalestranteAsync(bool includeEventos = false)
         {
             IQueryable<Palestrante> query = _context.Palestrantes
-                                .Include(e => e.RedesSociais);
+                                .Include(e => e.RedesSociais)
+                                .AsNoTracking();
 
             if(includeEventos) // se for true
             {
                 query = query   //inclua palestrantes eventos e sua relação no select
                     .Include(e => e.PalestrantesEventos) // a cada palestrante evento que existir, inclua o palestrante
-                    .ThenInclude(pe => pe.Evento); //agora inclua == thenInclude
+                    .ThenInclude(pe => pe.Evento) //agora inclua == thenInclude
+                    .AsNoTracking();
             }
             query = query.OrderBy(e => e.Id);
 
@@ -38,7 +40,8 @@ namespace ProEventos.Persistence
             {
                 query = query   //inclua palestrantes eventos e sua relação no select
                     .Include(e => e.PalestrantesEventos) // a cada palestrante evento que existir, inclua o evento
-                    .ThenInclude(pe => pe.Evento); //agora inclua == thenInclude
+                    .ThenInclude(pe => pe.Evento) //agora inclua == thenInclude
+                    .AsNoTracking();
             }
             query = query.OrderBy(e => e.Id).Where(e => e.Nome.ToLower().Contains(nome.ToLower()));
 
@@ -49,7 +52,7 @@ namespace ProEventos.Persistence
         public async Task<Palestrante> GetPalestranteByIdAsync(int palestranteId, bool includeEventos = false)
         {
            IQueryable<Palestrante> query = _context.Palestrantes
-                                .Include(e => e.RedesSociais);
+                                .Include(e => e.RedesSociais).AsNoTracking();
 
             if(includeEventos) // se for true
             {
